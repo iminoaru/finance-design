@@ -12,8 +12,7 @@ export function CallToAction() {
             <div className="absolute inset-0 z-0">
                 <Threads
                     amplitude={1}
-                    distance={0}
-                    enableMouseInteraction={true}
+                    distance={4}
                 />
             </div>
 

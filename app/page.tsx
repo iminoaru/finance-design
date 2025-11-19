@@ -15,7 +15,7 @@ export default function Home() {
       <Hero />
       <MarketData />
       <Features />
-      <TextReveal text="Financial intelligence re-imagined for the modern age." />
+      <TextReveal text="Financial intelligence reimagined for the modern age." />
       <AIDemo />
       <Pricing />
       <CallToAction />

@@ -9,14 +9,15 @@ export function Footer() {
         <footer className="bg-[#111] text-white pt-24 pb-8 relative overflow-hidden">
 
             {/* Cloud Visual - Subtle background */}
-            <div className="absolute bottom-0 left-0 right-0 h-[400px] w-full z-0 opacity-30 pointer-events-none mix-blend-screen">
+            <div className="absolute bottom-0 left-0 right-0 h-[500px] w-full z-0 opacity-40 pointer-events-none">
                 <Image
                     src="/footer_clouds.png"
                     alt="Clouds"
                     fill
-                    className="object-cover object-bottom"
+                    className="object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-transparent to-[#111]" />
+                {/* Stronger fade on top */}
+                <div className="absolute inset-0 bg-gradient-to-t from-transparent from-0% via-[#111]/80 via-40% to-[#111] to-70%" />
             </div>
 
             <div className="container mx-auto px-4 md:px-6 relative z-20">
@@ -66,7 +67,7 @@ export function Footer() {
 
                 {/* Bottom Bar */}
                 <div className="pt-6 border-t border-white/10 text-center">
-                    <p className="text-sm text-gray-500">© 2025 BharatNiti AI. All rights reserved.</p>
+                    <p className="text-sm text-white">© 2025 BharatNiti AI. All rights reserved.</p>
                 </div>
             </div>
         </footer>

@@ -23,16 +23,10 @@ export function AIDemo() {
     const y1 = useTransform(scrollYProgress, [0, 1], [100, -100]);
     const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: "1",
-            role: "ai",
-            content: "Hello. I'm your research assistant. How can I help you analyze the Indian market today?",
-        },
-    ]);
+    const [messages, setMessages] = useState<Message[]>([]);
 
     // Scroll-triggered message reveal simulation
-    const [visibleMessages, setVisibleMessages] = useState<number>(1);
+    const [visibleMessages, setVisibleMessages] = useState<number>(0);
     const chatRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress: chatScrollProgress } = useScroll({
         target: chatRef,
@@ -41,14 +35,11 @@ export function AIDemo() {
 
     useEffect(() => {
         const unsubscribe = chatScrollProgress.on("change", (v) => {
-            if (v > 0.2 && visibleMessages < 2) {
+            if (v > 0.2 && visibleMessages < 1) {
+                addMessage(1);
+            }
+            if (v > 0.4 && visibleMessages < 2) {
                 addMessage(2);
-            }
-            if (v > 0.4 && visibleMessages < 3) {
-                addMessage(3);
-            }
-            if (v > 0.6 && visibleMessages < 4) {
-                addMessage(4);
             }
         });
         return () => unsubscribe();
@@ -56,20 +47,20 @@ export function AIDemo() {
 
     const addMessage = (step: number) => {
         setVisibleMessages(step);
-        if (step === 2) {
+        if (step === 1) {
             setMessages(prev => [
                 ...prev,
                 {
-                    id: "2",
+                    id: "1",
                     role: "user",
                     content: "Find EV component manufacturers in India with >20% YoY growth and PE < 50.",
                 }
             ]);
-        } else if (step === 3) {
+        } else if (step === 2) {
             setMessages(prev => [
                 ...prev,
                 {
-                    id: "3",
+                    id: "2",
                     role: "ai",
                     content: (
                         <div className="space-y-4">
@@ -103,15 +94,6 @@ export function AIDemo() {
                             </div>
                         </div>
                     ),
-                }
-            ]);
-        } else if (step === 4) {
-            setMessages(prev => [
-                ...prev,
-                {
-                    id: "4",
-                    role: "ai",
-                    content: "I've also generated a preliminary investment memo and added these to your 'EV Watchlist'. Would you like to see the full report?",
                 }
             ]);
         }
@@ -173,8 +155,8 @@ export function AIDemo() {
                     {/* Chat Interface */}
                     <div className="flex-1 w-full max-w-xl" ref={chatRef}>
                         <motion.div
-                            style={{ y: y1, opacity }}
-                            className="bg-white rounded-[2rem] shadow-2xl shadow-gray-200/50 border border-gray-100 overflow-hidden"
+                            style={{ y: y1 }}
+                            className="bg-white rounded-[2rem] shadow-2xl shadow-gray-200/50 border-2 border-gray-200 overflow-hidden"
                         >
                             {/* Header */}
                             <div className="bg-white px-6 py-4 border-b border-gray-50 flex items-center justify-between">
