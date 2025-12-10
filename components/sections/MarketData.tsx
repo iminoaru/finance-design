@@ -29,7 +29,7 @@ export function MarketData() {
                     >
                         {[...TICKER_DATA, ...TICKER_DATA, ...TICKER_DATA, ...TICKER_DATA].map((item, i) => (
                             <div
-                                key={i}
+                                key={`${item.symbol}-${i}`}
                                 className="flex items-center gap-3 group cursor-pointer"
                             >
                                 <span className="font-serif font-medium text-[#1F2937]">

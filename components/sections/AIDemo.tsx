@@ -70,8 +70,8 @@ export function AIDemo() {
                                     { name: "Olectra Greentech", symbol: "OLECTRA", growth: "+45%", pe: "42.1" },
                                     { name: "JBM Auto Ltd", symbol: "JBMMA", growth: "+28%", pe: "48.5" },
                                     { name: "Sona BLW Precision", symbol: "SONACOMS", growth: "+22%", pe: "49.2" }
-                                ].map((stock, i) => (
-                                    <div key={i} className="bg-white border border-gray-100 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer">
+                                ].map((stock) => (
+                                    <div key={stock.symbol} className="bg-white border border-gray-100 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer">
                                         <div className="flex justify-between items-start mb-2">
                                             <div>
                                                 <div className="font-serif font-medium text-[#1F2937]">{stock.name}</div>

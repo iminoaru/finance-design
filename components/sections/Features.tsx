@@ -53,9 +53,9 @@ export function Features() {
                             image: "/feature_orb.jpg",
                             className: "opacity-30 mix-blend-multiply bottom-1/3"
                         }
-                    ].map((feature, i) => (
+                    ].map((feature) => (
                         <div
-                            key={i}
+                            key={feature.title}
                             className="aspect-square bg-white rounded-[2.5rem] p-10 border border-gray-200 relative overflow-hidden group flex flex-col justify-between hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500"
                         >
                             {/* Feature Background Image */}

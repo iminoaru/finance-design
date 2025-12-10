@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useTransform, useMotionValue } from "framer-motion";
 
 interface TextRevealProps {
@@ -11,30 +11,51 @@ export function TextReveal({ text }: TextRevealProps) {
     const container = useRef<HTMLDivElement>(null);
     const [isActive, setIsActive] = useState(false);
     const scrollProgress = useMotionValue(0);
+    const touchStartY = useRef(0);
+    const accumulatedScrollRef = useRef(0);
 
     const words = text.split(" ");
+    const scrollThreshold = 2000; 
+    
+    const isTouchDevice = useCallback(() => {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    }, []);
 
     useEffect(() => {
-        let accumulatedScroll = 0;
-        const scrollThreshold = 2000; // Total scroll distance needed to complete
+        const updateProgress = (delta: number) => {
+            accumulatedScrollRef.current += delta;
+            accumulatedScrollRef.current = Math.max(0, Math.min(scrollThreshold, accumulatedScrollRef.current));
 
-        const handleWheel = (e: WheelEvent) => {
-            if (!isActive) return;
-
-            e.preventDefault();
-
-            // Accumulate scroll
-            accumulatedScroll += e.deltaY;
-            accumulatedScroll = Math.max(0, Math.min(scrollThreshold, accumulatedScroll));
-
-            // Update progress (0 to 1)
-            const progress = accumulatedScroll / scrollThreshold;
+            const progress = accumulatedScrollRef.current / scrollThreshold;
             scrollProgress.set(progress);
 
             // Release lock when complete
             if (progress >= 0.98) {
                 setIsActive(false);
             }
+        };
+
+        const handleWheel = (e: WheelEvent) => {
+            if (!isActive) return;
+
+            e.preventDefault();
+            updateProgress(e.deltaY);
+        };
+
+        const handleTouchStart = (e: TouchEvent) => {
+            if (!isActive) return;
+            touchStartY.current = e.touches[0].clientY;
+        };
+
+        const handleTouchMove = (e: TouchEvent) => {
+            if (!isActive) return;
+
+            e.preventDefault();
+            const currentY = e.touches[0].clientY;
+            const delta = (touchStartY.current - currentY) * 3;
+            touchStartY.current = currentY;
+            
+            updateProgress(delta);
         };
 
         const handleScroll = () => {
@@ -51,18 +72,24 @@ export function TextReveal({ text }: TextRevealProps) {
 
         window.addEventListener('scroll', handleScroll, { passive: true });
         window.addEventListener('wheel', handleWheel, { passive: false });
+        window.addEventListener('touchstart', handleTouchStart, { passive: true });
+        window.addEventListener('touchmove', handleTouchMove, { passive: false });
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('wheel', handleWheel);
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchmove', handleTouchMove);
         };
-    }, [isActive, scrollProgress]);
+    }, [isActive, scrollProgress, scrollThreshold]);
 
     useEffect(() => {
         if (isActive) {
             document.body.style.overflow = 'hidden';
+            document.body.style.touchAction = 'none';
         } else {
             document.body.style.overflow = '';
+            document.body.style.touchAction = '';
         }
     }, [isActive]);
 
@@ -74,7 +101,7 @@ export function TextReveal({ text }: TextRevealProps) {
                         const start = i / words.length;
                         const end = start + 1 / words.length;
                         return (
-                            <Word key={i} progress={scrollProgress} range={[start, end]}>
+                            <Word key={`word-${i}`} progress={scrollProgress} range={[start, end]}>
                                 {word}
                             </Word>
                         );
